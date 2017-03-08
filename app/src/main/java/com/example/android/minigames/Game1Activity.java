@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Stack;
+
 public class Game1Activity extends AppCompatActivity {
     ImageView[] list = new ImageView[10];
     boolean winner = false;
@@ -14,7 +16,9 @@ public class Game1Activity extends AppCompatActivity {
     boolean marker = true;
     int id;
     Intent restartIntent;
+    Stack<Integer> undo = new Stack<>();
     StringBuilder stringBuilder = new StringBuilder();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,18 +36,19 @@ public class Game1Activity extends AppCompatActivity {
         } else {
             ((ImageView) view).setImageResource(R.mipmap.gameo);
             view.setTag(R.mipmap.gameo);
-            ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1)+ getString(R.string.play));
+            ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.play));
         }
         marker = !marker;
         view.setOnClickListener(null);
         id = view.getId();
+        undo.push(id);
         if (checkIfOver(id)) {
             findViewById(R.id.UNDO).setClickable(false);
             for (int i = 1; i <= 9; i++) {
                 list[i].setOnClickListener(null);
             }
-            if(marker)
-            ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P2) + getString(R.string.won));
+            if (marker)
+                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P2) + getString(R.string.won));
             else
                 ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.won));
             return;
@@ -155,23 +160,27 @@ public class Game1Activity extends AppCompatActivity {
     }
 
     public void undo(View view) {
-        ImageView current = ((ImageView) findViewById(id));
-        current.setImageResource(0);
-        marker = !marker;
-        if (marker) {
-            ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P2) + getString(R.string.play));
-        } else
-            ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.play));
-        current.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addMarker(v);
-            }
-        });
+        if (!undo.isEmpty()) {
+            int undoid = undo.pop();
+            ImageView current = ((ImageView) findViewById(undoid));
+            current.setTag(null);
+            current.setImageResource(0);
+            marker = !marker;
+            if (marker) {
+                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P2) + getString(R.string.play));
+            } else
+                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.play));
+            current.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addMarker(v);
+                }
+            });
+        }
     }
 
     public void mainMenu(View view) {
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
 }

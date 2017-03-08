@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">MiniGames</string>
     <string name="game1">Tic Tac Toe</string>
+    <string name="Restart">Restart</string>
+    <string name="Undo">Undo</string>
+    <string name="MainMenu">Main Menu</string>
+    <string name="P1">Player 1</string>
+    <string name="P2">Player 2</string>
+    <string name="won">\u0020 has won</string>
+    <string name="play">\u0020 can play</string>
+    <string name="draw">Game is a draw</string>
+    <string name="player_1_can_play">Player 1 can play</string>
 </resources>

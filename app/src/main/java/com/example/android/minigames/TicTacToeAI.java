@@ -11,12 +11,6 @@ class TicTacToeAI {
     static int[][]  board =new int[SIZE][SIZE];
 
     /**
-     * Constructor with the given game board
-     */
-    TicTacToeAI() {
-    }
-
-    /**
      * Get next best move for COMPUTER. Return int[2] of {row, col}
      */
     int[] move() {

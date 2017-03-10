@@ -28,6 +28,7 @@
             android:padding="10dp"
             android:text="@string/Restart"
             android:onClick="restart"
+            android:id="@+id/t1Restart"
             />
         <Button
             style="?android:attr/buttonBarButtonStyle"

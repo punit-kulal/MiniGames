@@ -10,4 +10,8 @@
     <string name="play">\u0020 can play</string>
     <string name="draw">Game is a draw</string>
     <string name="player_1_can_play">Player 1 can play</string>
+    <string-array name="number_player_">
+        <item>1P</item>
+        <item>2P</item>
+    </string-array>
 </resources>

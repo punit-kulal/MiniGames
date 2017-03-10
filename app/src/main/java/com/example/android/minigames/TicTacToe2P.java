@@ -1,29 +1,29 @@
 package com.example.android.minigames;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Stack;
 
-public class Game1Activity extends AppCompatActivity {
+public class TicTacToe2P extends AppCompatActivity {
     ImageView[] list = new ImageView[10];
     boolean winner = false;
     int[] idArray;
     boolean marker = true;
     int id;
-    Intent restartIntent;
     Stack<Integer> undo = new Stack<>();
-    StringBuilder stringBuilder = new StringBuilder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game1);
-        restartIntent = getIntent();
+        setContentView(R.layout.tic_tac_toe2_p);
         idArray = new int[]{0, R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven, R.id.eight, R.id.nine};
     }
 
@@ -43,7 +43,9 @@ public class Game1Activity extends AppCompatActivity {
         id = view.getId();
         undo.push(id);
         if (checkIfOver(id)) {
-            findViewById(R.id.UNDO).setClickable(false);
+            Button undo_button = (Button)findViewById(R.id.UNDO);
+            undo_button.setClickable(false);
+            undo_button.setTextColor(Color.GRAY);
             for (int i = 1; i <= 9; i++) {
                 list[i].setOnClickListener(null);
             }
@@ -155,14 +157,36 @@ public class Game1Activity extends AppCompatActivity {
         return false;
     }
 
+
     public void restart(View view) {
-        startActivity(restartIntent);
+        for (int i = 1; i < 10; i++) {
+            undo.clear();
+            ImageView current = list[i];
+            current.setTag(null);
+            current.setImageResource(0);
+            marker = !marker;
+            current.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addMarker(v);
+                }
+            });
+        }
+        findViewById(R.id.UNDO).setClickable(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((Button)findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent,null));
+        }
+        else
+            ((Button)findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent));
+        marker = true;
+        winner = false;
+        ((TextView)findViewById(R.id.Player)).setText(R.string.player_1_can_play);
     }
 
     public void undo(View view) {
         if (!undo.isEmpty()) {
-            int undoid = undo.pop();
-            ImageView current = ((ImageView) findViewById(undoid));
+            int undo_id = undo.pop();
+            ImageView current = ((ImageView) findViewById(undo_id));
             current.setTag(null);
             current.setImageResource(0);
             marker = !marker;

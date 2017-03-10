@@ -15,11 +15,22 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game1"
-            android:layout_margin="20dp"
-            android:onClick="TicTacToe"/>
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/game1"
+                android:onClick="TicTacToe"
+                android:layout_weight="1"
+                android:id="@+id/game1"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/numPlayer"/>
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

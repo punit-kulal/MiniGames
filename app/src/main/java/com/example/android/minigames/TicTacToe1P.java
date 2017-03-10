@@ -1,6 +1,5 @@
 package com.example.android.minigames;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -120,8 +119,7 @@ public class TicTacToe1P extends AppCompatActivity {
     }
 
     public void mainMenu(View view) {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+        this.finish();
     }
 
     private boolean isDraw() {

@@ -23,7 +23,7 @@ public class TicTacToe2P extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tic_tac_toe2_p);
+        setContentView(R.layout.tic_tac_toe);
         idArray = new int[]{0, R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven, R.id.eight, R.id.nine};
     }
 
@@ -32,11 +32,11 @@ public class TicTacToe2P extends AppCompatActivity {
         if (marker) {
             ((ImageView) view).setImageResource(R.mipmap.x);
             view.setTag(R.mipmap.x);
-            ((TextView) findViewById(R.id.Player)).setText((getString(R.string.P2) + getString(R.string.play)));
+            ((TextView) findViewById(R.id.Player)).setText(R.string.g1_t2_p2play);
         } else {
             ((ImageView) view).setImageResource(R.mipmap.gameo);
             view.setTag(R.mipmap.gameo);
-            ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.play));
+            ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p1play);
         }
         marker = !marker;
         view.setOnClickListener(null);
@@ -50,9 +50,9 @@ public class TicTacToe2P extends AppCompatActivity {
                 list[i].setOnClickListener(null);
             }
             if (marker)
-                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P2) + getString(R.string.won));
+                ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p2won);
             else
-                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.won));
+                ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p1won);
             return;
         }
         if (draw()) {
@@ -159,8 +159,8 @@ public class TicTacToe2P extends AppCompatActivity {
 
 
     public void restart(View view) {
+        undo.clear();
         for (int i = 1; i < 10; i++) {
-            undo.clear();
             ImageView current = list[i];
             current.setTag(null);
             current.setImageResource(0);
@@ -191,9 +191,9 @@ public class TicTacToe2P extends AppCompatActivity {
             current.setImageResource(0);
             marker = !marker;
             if (marker) {
-                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P2) + getString(R.string.play));
+                ((TextView) findViewById(R.id.Player)).setText(R.string.g1_t2_p2play);
             } else
-                ((TextView) findViewById(R.id.Player)).setText(getString(R.string.P1) + getString(R.string.play));
+                ((TextView) findViewById(R.id.Player)).setText(R.string.player_1_can_play);
             current.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

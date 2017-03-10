@@ -3,18 +3,17 @@ package com.example.android.minigames;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TicTacToeAI {
-    Integer[][] board;
+class TicTacToeAI {
     static final int COMPUTER = 1;
     static final int HUMAN = -1;
     static final int DEALLOCATE = 0;
-    final int SIZE = 3;
-    
+    static final int SIZE = 3;
+    static int[][]  board =new int[SIZE][SIZE];
+
     /**
      * Constructor with the given game board
      */
-    public TicTacToeAI(Integer[][] board) {
-        this.board = board;
+    TicTacToeAI() {
     }
 
     /**
@@ -73,7 +72,7 @@ public class TicTacToeAI {
      * Return List of moves in int[2] of {row, col} or empty list if gameover
      */
     private List<int[]> generateMoves() {
-        List<int[]> nextMoves = new ArrayList<int[]>(); // allocate List
+        List<int[]> nextMoves = new ArrayList<>(); // allocate List
 
         // If gameover, i.e., no next move
         if (hasWon()) {
@@ -169,17 +168,15 @@ public class TicTacToeAI {
         return score;
     }
 
-    private boolean hasWon(){
+    static boolean hasWon(){
         for (int i = 0; i < SIZE; i++) {
-            if(board[SIZE][0]== board[SIZE][1]&& board[SIZE][1]== board[SIZE][2])
+            if((((board[i][0] == board[i][1]) && (board[i][1] == board[i][2])) && (board[i][0] != DEALLOCATE)))
                 return true;
-            if (board[0][SIZE]== board[1][SIZE] && board[1][SIZE]== board[2][SIZE])
+            if (((board[0][i]== board[1][i]) && (board[1][i]== board[2][i]))&&board[1][i]!=DEALLOCATE)
                 return true;
         }
-        if(board[0][0]==board[1][1]&&board[1][1]==board[2][2])
+        if((board[0][0]==board[1][1]&&board[1][1]==board[2][2])&&board[0][0]!=DEALLOCATE)
             return true;
-        if(board[0][2]==board[1][1]&& board[1][1]==board[2][0])
-            return true;
-        return false;
+        return (board[0][2] == board[1][1] && board[1][1] == board[2][0]) && board[2][0] != DEALLOCATE;
     }
 }

@@ -1,14 +1,17 @@
 package com.example.android.minigames;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -23,7 +26,13 @@ public class TicTacToe1P extends AppCompatActivity {
     ImageView[][] list = new ImageView[3][3];
     boolean winner = false;
     int[][] idArray;
-    int id, compImage = 0, humanImage = 1;
+    View.OnClickListener setter = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            addMarker(v);
+        }
+    };
+    int id, compImage = 1, humanImage = 0;
     Stack<Integer> undo = new Stack<>();
     TicTacToeAI pc = new TicTacToeAI();
 
@@ -47,16 +56,17 @@ public class TicTacToe1P extends AppCompatActivity {
     }
 
     public void addMarker(View view) {
-        allotmove((ImageView) view, humanImage, TicTacToeAI.HUMAN);
+        allotMove((ImageView) view, humanImage, TicTacToeAI.HUMAN);
         if (checkIfOver(R.string.t1_hwin)) {
             return;
         }
         //Computer plays;
+        ((TextView) findViewById(R.id.Player)).setText("Wait");
         int[] temp;
         temp = pc.move();
-        allotmove((ImageView) findViewById(idArray[temp[0]][temp[1]]), compImage, TicTacToeAI.COMPUTER);
-        if (checkIfOver(R.string.t1_cwin))
-            ;
+        allotMove((ImageView) findViewById(idArray[temp[0]][temp[1]]), compImage, TicTacToeAI.COMPUTER);
+//        if (checkIfOver(R.string.t1_cwin))
+//            ;
     }
 
     private boolean checkIfOver(int stringID) {
@@ -71,15 +81,29 @@ public class TicTacToe1P extends AppCompatActivity {
         return false;
     }
 
-    void allotmove(ImageView view, int imageselect, int player) {
+    void allotMove(ImageView view, int imageselect, int player) {
         int[] move;
-        view.setImageResource(imageSelector[imageselect]);
+        if (imageselect == humanImage)
+            view.setImageResource(imageSelector[imageselect]);
+        else {
+            MyHandler handler = new MyHandler();
+            MyRunnable task = new MyRunnable(this, view, imageSelector[compImage]);
+            handler.postDelayed(task, 1200);
+        }
         view.setTag(imageSelector[imageselect]);
         view.setOnClickListener(null);
         id = view.getId();
         undo.add(id);
         move = getRowCol(id);
         board[move[0]][move[1]] = player;
+        //shut down all listeners temporarily
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                list[i][j].setEnabled(false);
+            }
+        }
+        findViewById(R.id.t1Restart).setEnabled(false);
+        findViewById(R.id.UNDO).setEnabled(false);
     }
 
     void afterGameOver(int stringID) {
@@ -88,9 +112,9 @@ public class TicTacToe1P extends AppCompatActivity {
                 list[i][j].setOnClickListener(null);
             }
         }
-        ((TextView)findViewById(R.id.Player)).setText(stringID);
-        Button undo_button = (Button)findViewById(R.id.UNDO);
-        undo_button.setClickable(false);
+        ((TextView) findViewById(R.id.Player)).setText(stringID);
+        Button undo_button = (Button) findViewById(R.id.UNDO);
+        undo_button.setEnabled(false);
         undo_button.setTextColor(Color.GRAY);
     }
 
@@ -101,21 +125,16 @@ public class TicTacToe1P extends AppCompatActivity {
                 board[i][j] = DEALLOCATE;
                 list[i][j].setImageResource(0);
                 list[i][j].setTag(null);
-                list[i][j].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addMarker(v);
-                    }
-                });
+                list[i][j].setOnClickListener(setter);
+                list[i][j].setEnabled(true);
             }
         }
         ((TextView) findViewById(R.id.Player)).setText(R.string.t1_inital);
-        findViewById(R.id.UNDO).setClickable(true);
+        findViewById(R.id.UNDO).setEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((Button)findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent,null));
-        }
-        else
-            ((Button)findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent));
+            ((Button) findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent, null));
+        } else
+            ((Button) findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
     public void mainMenu(View view) {
@@ -154,14 +173,45 @@ public class TicTacToe1P extends AppCompatActivity {
                 currentID = undo.pop();
                 currentImage = (ImageView) findViewById(currentID);
                 currentImage.setImageResource(0);
-                currentImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addMarker(v);
-                    }
-                });
+                currentImage.setOnClickListener(setter);
                 move = getRowCol(currentID);
                 board[move[0]][move[1]] = DEALLOCATE;
+            }
+        }
+    }
+
+    private static class MyHandler extends Handler {
+
+    }
+
+    public class MyRunnable implements Runnable {
+        private final WeakReference<Activity> mActivity;
+        private final ImageView image;
+        private final int id;
+
+        public MyRunnable(Activity activity, ImageView image, int id) {
+            mActivity = new WeakReference<>(activity);
+            this.image = image;
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            Activity activity = mActivity.get();
+            if (activity != null) {
+                ((TextView) activity.findViewById(R.id.Player)).setText(R.string.t1_inital);
+                image.setImageResource(id);
+                //reset disabled onclicklistener.
+                for (int i = 0; i < SIZE; i++) {
+                    for (int j = 0; j < SIZE; j++) {
+                        if (board[i][j] == DEALLOCATE) {
+                            ((TicTacToe1P) activity).list[i][j].setEnabled(true);
+                        }
+                    }
+                }
+                findViewById(R.id.t1Restart).setEnabled(true);
+                findViewById(R.id.UNDO).setEnabled(true);
+                checkIfOver(R.string.t1_cwin);
             }
         }
     }

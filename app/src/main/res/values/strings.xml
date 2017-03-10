@@ -10,4 +10,11 @@
     <string name="play">\u0020 can play</string>
     <string name="draw">Game is a draw</string>
     <string name="player_1_can_play">Player 1 can play</string>
+    <string name="t1_hwin">You win.</string>
+    <string name="t1_cwin">Computer win</string>
+    <string name="t1_inital">Play</string>
+    <string name="g1_t2_p2play">Player 2 can play</string>
+    <string name="t2_p1play">Player 1 play</string>
+    <string name="t2_p2won">Player 2 has won</string>
+    <string name="t2_p1won">Player 1 has won</string>
 </resources>

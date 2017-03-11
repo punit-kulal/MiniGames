@@ -9,12 +9,14 @@ class TicTacToeAI {
     static final int DEALLOCATE = 0;
     static final int SIZE = 3;
     static int[][]  board =new int[SIZE][SIZE];
+    private int difficulty=1;
 
     /**
      * Get next best move for COMPUTER. Return int[2] of {row, col}
      */
+
     int[] move() {
-        int[] result = minimax(4, COMPUTER); // depth, max turn
+        int[] result = minimax(difficulty, COMPUTER); // depth, max turn
         return new int[]{result[1], result[2]};   // row, col
     }
 
@@ -172,5 +174,9 @@ class TicTacToeAI {
         if((board[0][0]==board[1][1]&&board[1][1]==board[2][2])&&board[0][0]!=DEALLOCATE)
             return true;
         return (board[0][2] == board[1][1] && board[1][1] == board[2][0]) && board[2][0] != DEALLOCATE;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 }

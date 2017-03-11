@@ -1,8 +1,6 @@
 package com.example.android.minigames;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -60,6 +58,8 @@ public class TicTacToe1P extends AppCompatActivity {
         if (checkIfOver(R.string.t1_hwin)) {
             return;
         }
+        findViewById(R.id.t1Restart).setEnabled(false);
+        findViewById(R.id.UNDO).setEnabled(false);
         //Computer plays;
         ((TextView) findViewById(R.id.Player)).setText("Wait");
         int[] temp;
@@ -102,8 +102,6 @@ public class TicTacToe1P extends AppCompatActivity {
                 list[i][j].setEnabled(false);
             }
         }
-        findViewById(R.id.t1Restart).setEnabled(false);
-        findViewById(R.id.UNDO).setEnabled(false);
     }
 
     void afterGameOver(int stringID) {
@@ -115,7 +113,6 @@ public class TicTacToe1P extends AppCompatActivity {
         ((TextView) findViewById(R.id.Player)).setText(stringID);
         Button undo_button = (Button) findViewById(R.id.UNDO);
         undo_button.setEnabled(false);
-        undo_button.setTextColor(Color.GRAY);
     }
 
     public void restart(View view) {
@@ -131,10 +128,6 @@ public class TicTacToe1P extends AppCompatActivity {
         }
         ((TextView) findViewById(R.id.Player)).setText(R.string.t1_inital);
         findViewById(R.id.UNDO).setEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((Button) findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent, null));
-        } else
-            ((Button) findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
     public void mainMenu(View view) {

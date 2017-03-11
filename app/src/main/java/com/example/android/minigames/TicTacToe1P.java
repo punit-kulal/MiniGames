@@ -5,21 +5,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Stack;
 
-import static com.example.android.minigames.R.layout.tic_tac_toe;
 import static com.example.android.minigames.TicTacToeAI.DEALLOCATE;
 import static com.example.android.minigames.TicTacToeAI.SIZE;
 import static com.example.android.minigames.TicTacToeAI.board;
 import static com.example.android.minigames.TicTacToeAI.hasWon;
 
-public class TicTacToe1P extends AppCompatActivity {
+public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int[] imageSelector = new int[2];
     ImageView[][] list = new ImageView[3][3];
     boolean winner = false;
@@ -33,11 +35,12 @@ public class TicTacToe1P extends AppCompatActivity {
     int id, compImage = 1, humanImage = 0;
     Stack<Integer> undo = new Stack<>();
     TicTacToeAI pc = new TicTacToeAI();
+    Spinner difficultySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(tic_tac_toe);
+        setContentView(R.layout.tic_tac_toe1p);
         idArray = new int[][]{{R.id.one, R.id.two, R.id.three},
                 {R.id.four, R.id.five, R.id.six},
                 {R.id.seven, R.id.eight, R.id.nine}};
@@ -49,8 +52,12 @@ public class TicTacToe1P extends AppCompatActivity {
                 list[i][j] = (ImageView) findViewById(idArray[i][j]);
             }
         }
-        //Initializing here because common layout.
-        ((TextView) findViewById(R.id.Player)).setText(R.string.t1_inital);
+        difficultySpinner = (Spinner) findViewById(R.id.difficulty);
+        ArrayAdapter<CharSequence> difficultyAdapter = ArrayAdapter.createFromResource(this, R.array.difficulty_level,
+                android.R.layout.simple_spinner_item);
+        difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        difficultySpinner.setAdapter(difficultyAdapter);
+        difficultySpinner.setOnItemSelectedListener(this);
     }
 
     public void addMarker(View view) {
@@ -88,7 +95,10 @@ public class TicTacToe1P extends AppCompatActivity {
         else {
             MyHandler handler = new MyHandler();
             MyRunnable task = new MyRunnable(this, view, imageSelector[compImage]);
-            handler.postDelayed(task, 1200);
+            if(difficultySpinner.getSelectedItemPosition()==1)
+            handler.postDelayed(task, 2400);
+            else
+                handler.post(task);
         }
         view.setTag(imageSelector[imageselect]);
         view.setOnClickListener(null);
@@ -102,6 +112,7 @@ public class TicTacToe1P extends AppCompatActivity {
                 list[i][j].setEnabled(false);
             }
         }
+        difficultySpinner.setEnabled(false);
     }
 
     void afterGameOver(int stringID) {
@@ -113,6 +124,7 @@ public class TicTacToe1P extends AppCompatActivity {
         ((TextView) findViewById(R.id.Player)).setText(stringID);
         Button undo_button = (Button) findViewById(R.id.UNDO);
         undo_button.setEnabled(false);
+        difficultySpinner.setEnabled(true);
     }
 
     public void restart(View view) {
@@ -171,41 +183,56 @@ public class TicTacToe1P extends AppCompatActivity {
                 board[move[0]][move[1]] = DEALLOCATE;
             }
         }
+        if (undo.isEmpty())
+            difficultySpinner.setEnabled(true);
     }
 
-    private static class MyHandler extends Handler {
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        pc.setDifficulty(position + 1);
+        if(!undo.isEmpty()){
 
+        }
+        restart(view);
     }
+        @Override
+        public void onNothingSelected (AdapterView < ? > parent){
 
-    public class MyRunnable implements Runnable {
-        private final WeakReference<Activity> mActivity;
-        private final ImageView image;
-        private final int id;
-
-        public MyRunnable(Activity activity, ImageView image, int id) {
-            mActivity = new WeakReference<>(activity);
-            this.image = image;
-            this.id = id;
         }
 
-        @Override
-        public void run() {
-            Activity activity = mActivity.get();
-            if (activity != null) {
-                ((TextView) activity.findViewById(R.id.Player)).setText(R.string.t1_inital);
-                image.setImageResource(id);
-                //reset disabled onclicklistener.
-                for (int i = 0; i < SIZE; i++) {
-                    for (int j = 0; j < SIZE; j++) {
-                        if (board[i][j] == DEALLOCATE) {
-                            ((TicTacToe1P) activity).list[i][j].setEnabled(true);
+        private static class MyHandler extends Handler {
+
+        }
+
+        public class MyRunnable implements Runnable {
+            private final WeakReference<Activity> mActivity;
+            private final ImageView image;
+            private final int id;
+
+            public MyRunnable(Activity activity, ImageView image, int id) {
+                mActivity = new WeakReference<>(activity);
+                this.image = image;
+                this.id = id;
+            }
+
+            @Override
+            public void run() {
+                Activity activity = mActivity.get();
+                if (activity != null) {
+                    ((TextView) activity.findViewById(R.id.Player)).setText(R.string.t1_inital);
+                    image.setImageResource(id);
+                    //reset disabled onclicklistener.
+                    for (int i = 0; i < SIZE; i++) {
+                        for (int j = 0; j < SIZE; j++) {
+                            if (board[i][j] == DEALLOCATE) {
+                                ((TicTacToe1P) activity).list[i][j].setEnabled(true);
+                            }
                         }
                     }
+                    findViewById(R.id.t1Restart).setEnabled(true);
+                    findViewById(R.id.UNDO).setEnabled(true);
+                    checkIfOver(R.string.t1_cwin);
                 }
-                findViewById(R.id.t1Restart).setEnabled(true);
-                findViewById(R.id.UNDO).setEnabled(true);
-                checkIfOver(R.string.t1_cwin);
             }
         }
     }
-}

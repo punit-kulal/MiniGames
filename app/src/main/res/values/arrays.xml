@@ -8,4 +8,10 @@
         <item>Easy</item>
         <item>Hard</item>
     </string-array>
+    <string-array name="game2_difficulty">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Expert</item>
+    </string-array>
 </resources>

@@ -26,7 +26,6 @@
                 android:onClick="TicTacToe"
                 android:layout_weight="1"
                 android:id="@+id/game1"
-                android:textColor="@android:color/tab_indicator_text"
                 style="@style/Base.Widget.AppCompat.Button"
                 />
             <Spinner
@@ -35,6 +34,10 @@
                 android:id="@+id/numPlayer"
                 android:paddingLeft="5dp"/>
         </LinearLayout>
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Game2"
+        android:onClick="game2"/>
     </LinearLayout>
 </RelativeLayout>

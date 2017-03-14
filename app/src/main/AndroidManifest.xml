@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.minigames">
+          package="com.example.android.minigames">
 
     <application
         android:allowBackup="true"
@@ -11,17 +11,20 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".TicTacToe2P"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".TicTacToe1P"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TicTacToe1P"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Reflex"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
     </application>
-
 </manifest>

@@ -54,7 +54,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
         }
         difficultySpinner = (Spinner) findViewById(R.id.difficulty);
         ArrayAdapter<CharSequence> difficultyAdapter = ArrayAdapter.createFromResource(this, R.array.difficulty_level,
-                android.R.layout.simple_spinner_item);
+                R.layout.spinner);
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(difficultyAdapter);
         difficultySpinner.setOnItemSelectedListener(this);
@@ -68,7 +68,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
         findViewById(R.id.t1Restart).setEnabled(false);
         findViewById(R.id.UNDO).setEnabled(false);
         //Computer plays;
-        ((TextView) findViewById(R.id.Player)).setText("Wait");
+        ((TextView) findViewById(R.id.Player)).setText(R.string.wait);
         int[] temp;
         temp = pc.move();
         allotMove((ImageView) findViewById(idArray[temp[0]][temp[1]]), compImage, TicTacToeAI.COMPUTER);
@@ -190,9 +190,6 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         pc.setDifficulty(position + 1);
-        if(!undo.isEmpty()){
-
-        }
         restart(view);
     }
         @Override
@@ -204,12 +201,12 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
 
         }
 
-        public class MyRunnable implements Runnable {
+        class MyRunnable implements Runnable {
             private final WeakReference<Activity> mActivity;
             private final ImageView image;
             private final int id;
 
-            public MyRunnable(Activity activity, ImageView image, int id) {
+            MyRunnable(Activity activity, ImageView image, int id) {
                 mActivity = new WeakReference<>(activity);
                 this.image = image;
                 this.id = id;

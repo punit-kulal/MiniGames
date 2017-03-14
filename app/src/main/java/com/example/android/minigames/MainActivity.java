@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Spinner spinner = (Spinner) findViewById(R.id.numPlayer);
         ArrayAdapter<CharSequence> spin = ArrayAdapter.createFromResource(this,R.array.number_player_,
-                android.R.layout.simple_spinner_item);
+                R.layout.spinner);
         spin.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(spin);
         spinner.setOnItemSelectedListener(this);
@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
         findViewById(R.id.game1).setClickable(false);
         ((Button)findViewById(R.id.game1)).setTextColor(Color.GRAY);
+    }
+
+    public void game2(View view) {
+        Intent game2 = new Intent(getApplicationContext(),Reflex.class);
+        startActivity(game2);
     }
 }
 

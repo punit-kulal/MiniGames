@@ -21,4 +21,11 @@
     <string name="score">Score</string>
     <string name="Start">Start</string>
     <string name="wait">Wait</string>
+    <string name="avoid_this">Avoid this</string>
+    <string name="click_this">Click this</string>
+    <string name="click_me">Click me</string>
+    <string name="avoid_me">Avoid me</string>
+    <string name="hold_me">Hold me</string>
+    <string name="ok">OK</string>
+    <string name="press_start_to_play_the_game">Press Start to play the game.</string>
 </resources>

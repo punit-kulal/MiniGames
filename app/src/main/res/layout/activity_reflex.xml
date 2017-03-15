@@ -27,6 +27,7 @@
             android:padding="5dp"
             android:paddingLeft="10dp"
             android:onClick="start_game"
+            android:id="@+id/G2_Start"
             />
         <LinearLayout
             android:layout_width="0dp"
@@ -43,10 +44,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/Score"
+                android:id="@+id/score"
                 android:text="0"
                 android:padding="5dp"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:textStyle="bold"
+                android:fontFamily="Roboto"/>
         </LinearLayout>
         <Spinner
             android:layout_width="0dp"
@@ -63,8 +66,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/game2switcher">
-        <include layout="@layout/em_reflex"/>
-        <include layout="@layout/h_reflex"/>
+        <include layout="@layout/reflex_em"/>
+        <include layout="@layout/reflex_h"/>
     </ViewSwitcher>
 
 </LinearLayout>

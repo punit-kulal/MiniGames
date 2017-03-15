@@ -1,23 +1,67 @@
 package com.example.android.minigames;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 class TicTacToeAI {
     static final int COMPUTER = 1;
     static final int HUMAN = -1;
     static final int DEALLOCATE = 0;
     static final int SIZE = 3;
-    static int[][]  board =new int[SIZE][SIZE];
-    private int difficulty=1;
+    static int[][] board = new int[SIZE][SIZE];
+    private int difficulty = 1;
+    private Stack<int[]> bestMoveStack = new Stack<>();
+    private int[][] randomiser = new int[6][2];
+    private final int MAX_COUNT = 2, RANDOM_SIZE = 5;
+    private int count = 0;
+    private int[] best_move;
 
     /**
      * Get next best move for COMPUTER. Return int[2] of {row, col}
      */
 
     int[] move() {
-        int[] result = minimax(difficulty, COMPUTER); // depth, max turn
-        return new int[]{result[1], result[2]};   // row, col
+        bestMoveStack.clear();
+        best_move = minimax(difficulty, COMPUTER); // depth, max turn
+        int[] result = randomMove();
+        return new int[]{result[0], result[1]};   // row, col
+    }
+
+    void reset() {
+        bestMoveStack.clear();
+        count = 0;
+    }
+
+    private int[] randomMove() {
+        int arr_size = 0, a, i;
+        if (count < MAX_COUNT) {
+            switch (difficulty) {
+                case 1:
+                    Iterator iterator = bestMoveStack.iterator();
+                    i = 0;
+                    while (iterator.hasNext()) {
+                        randomiser[i] = (int[]) iterator.next();
+                        i++;
+                    }
+                    arr_size = bestMoveStack.size();
+                    break;
+                case 2:
+                    if (bestMoveStack.size() > difficulty) {
+                        for (i = 0; i < difficulty+1; i++) {
+                            randomiser[i] = bestMoveStack.pop();
+                        }
+                        arr_size = difficulty+1;
+                    } else
+                        return bestMoveStack.pop();
+                    break;
+            }
+            a = (int) Math.round(Math.random() * (arr_size - 1));
+            count++;
+            return randomiser[a];
+        }
+        return new int[]{best_move[1],best_move[2]};
     }
 
     /**
@@ -47,6 +91,8 @@ class TicTacToeAI {
                         bestScore = currentScore;
                         bestRow = move[0];
                         bestCol = move[1];
+                        if (depth == difficulty)
+                            bestMoveStack.push(move);
                     }
                 } else {  // HUMAN is minimizing player
                     currentScore = minimax(depth - 1, COMPUTER)[0];
@@ -164,19 +210,23 @@ class TicTacToeAI {
         return score;
     }
 
-    static boolean hasWon(){
+    static boolean hasWon() {
         for (int i = 0; i < SIZE; i++) {
-            if((((board[i][0] == board[i][1]) && (board[i][1] == board[i][2])) && (board[i][0] != DEALLOCATE)))
+            if ((((board[i][0] == board[i][1]) && (board[i][1] == board[i][2])) && (board[i][0] != DEALLOCATE)))
                 return true;
-            if (((board[0][i]== board[1][i]) && (board[1][i]== board[2][i]))&&board[1][i]!=DEALLOCATE)
+            if (((board[0][i] == board[1][i]) && (board[1][i] == board[2][i])) && board[1][i] != DEALLOCATE)
                 return true;
         }
-        if((board[0][0]==board[1][1]&&board[1][1]==board[2][2])&&board[0][0]!=DEALLOCATE)
+        if ((board[0][0] == board[1][1] && board[1][1] == board[2][2]) && board[0][0] != DEALLOCATE)
             return true;
         return (board[0][2] == board[1][1] && board[1][1] == board[2][0]) && board[2][0] != DEALLOCATE;
     }
 
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

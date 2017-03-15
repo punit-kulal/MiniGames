@@ -96,9 +96,9 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
             MyHandler handler = new MyHandler();
             MyRunnable task = new MyRunnable(this, view, imageSelector[compImage]);
             if(difficultySpinner.getSelectedItemPosition()==1)
-            handler.postDelayed(task, 2400);
+            handler.postDelayed(task, 1500);
             else
-                handler.post(task);
+                handler.postDelayed(task,500);
         }
         view.setTag(imageSelector[imageselect]);
         view.setOnClickListener(null);
@@ -129,6 +129,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
 
     public void restart(View view) {
         //Clearing Board, clearing image view,tags and resetting thier listener
+        pc.reset();
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 board[i][j] = DEALLOCATE;

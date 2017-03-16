@@ -143,7 +143,7 @@ public class TicTacToe2P extends AppCompatActivity {
             }
         }
         set = true;
-        for (int i = 3; i <= 9; i += 2) {
+        for (int i = 3; i < 9; i += 2) {
             if (list[i].getTag() == null)
                 set = false;
         }

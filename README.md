@@ -5,7 +5,7 @@ An android application which contains list of mini games.
 	Also support easy 1p mode with different responses.
 2. Reflex based game to test hand eye co ordination. Scoring system for tracking progress.
 
-![SCREENSHOT](gameplay\Screenshot_2017-03-16-10-43-19-383_com.example.android.minigames.png)
+![SCREENSHOT](gameplay/Screenshot_2017-03-16-10-43-19-383_com.example.android.minigames.png)
 
 For more screenshots, browse gameplay folder.
 

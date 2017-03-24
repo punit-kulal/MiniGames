@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -126,6 +127,20 @@ public class Reflex extends AppCompatActivity implements AdapterView.OnItemSelec
                     }
                 }
             });
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Handler.post(new GameOverChecker(count, (ImageView) v));
+                    return true;
+                }
+            });
+            view.setOnDragListener(new View.OnDragListener() {
+                @Override
+                public boolean onDrag(View v, DragEvent event) {
+                    Handler.post(new GameOverChecker(count, (ImageView) v));
+                    return true;
+                }
+            });
             if (timer > 1700)
                 timer -= 100;
             else if (timer > 1500)
@@ -159,6 +174,13 @@ public class Reflex extends AppCompatActivity implements AdapterView.OnItemSelec
                 view.setImageResource(0);
                 view.setOnClickListener(null);
                 Handler.post(new GameOverChecker(count, view));
+                return true;
+            }
+        });
+        view.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                Handler.post(new GameOverChecker(count, (ImageView) v));
                 return true;
             }
         });
@@ -198,6 +220,13 @@ public class Reflex extends AppCompatActivity implements AdapterView.OnItemSelec
                 @Override
                 public void onClick(View v) {
                     Handler.post(new GameOverChecker(count, view));
+                }
+            });
+            view.setOnDragListener(new View.OnDragListener() {
+                @Override
+                public boolean onDrag(View v, DragEvent event) {
+                    Handler.post(new GameOverChecker(count, (ImageView) v));
+                    return true;
                 }
             });
             if (timer > 1700)
@@ -321,9 +350,22 @@ public class Reflex extends AppCompatActivity implements AdapterView.OnItemSelec
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
+                for (int i = 0; i < easy_list.length; i++) {
+                    easy_list[i].setImageResource(0);
+                    easy_list[i].setOnClickListener(null);
+                    easy_list[i].setOnLongClickListener(null);
+                    easy_list[i].setOnDragListener(null);
+                }
+                for (int i = 0; i < hard_list.length; i++) {
+                    hard_list[i].setImageResource(0);
+                    hard_list[i].setOnClickListener(null);
+                    hard_list[i].setOnLongClickListener(null);
+                    hard_list[i].setOnDragListener(null);
+                }
                 view.setImageResource(0);
                 view.setOnClickListener(null);
                 view.setOnLongClickListener(null);
+                view.setOnDragListener(null);
             }
         }
     }

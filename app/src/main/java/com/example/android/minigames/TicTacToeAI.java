@@ -26,6 +26,7 @@ class TicTacToeAI {
         bestMoveStack.clear();
         best_move = minimax(difficulty, COMPUTER); // depth, max turn
         int[] result = randomMove();
+        reset();
         return new int[]{result[0], result[1]};   // row, col
     }
 
@@ -49,13 +50,15 @@ class TicTacToeAI {
                     break;
                 case 2:
                     if (bestMoveStack.size() > difficulty) {
-                        for (i = 0; i < difficulty+1; i++) {
+                        for (i = 0; i < difficulty; i++) {
                             randomiser[i] = bestMoveStack.pop();
                         }
-                        arr_size = difficulty+1;
+                        arr_size = difficulty;
                     } else
                         return bestMoveStack.pop();
                     break;
+                case 3:
+                    return new int[]{best_move[0],best_move[1]};
             }
             a = (int) Math.round(Math.random() * (arr_size - 1));
             count++;

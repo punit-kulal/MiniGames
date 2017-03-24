@@ -1,5 +1,8 @@
 package com.example.android.minigames;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,10 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     int selected;
-
+    Context mainContext;
     public void setSelected(int selected) {
         this.selected = selected;
     }
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spin.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(spin);
         spinner.setOnItemSelectedListener(this);
+        mainContext = this;
     }
 
     public void TicTacToe(View view) {
@@ -35,11 +41,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         System.out.println(selected);
         switch (selected){
             case 0 : game1 = new Intent(getApplicationContext(),TicTacToe1P.class);
+                startActivity(game1);
                 break;
-            case 1: game1 = new Intent(getApplicationContext(),TicTacToe2P.class);
+            case 1: start2Pgame();
                 break;
         }
-        startActivity(game1);
+    }
+
+    private void start2Pgame() {
+        {
+            final AtomicBoolean b = new AtomicBoolean(Boolean.FALSE);
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setTitle("Play").setMessage("Do you want to play over Bluetooth.")
+            .setPositiveButton(
+                    "Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        mainContext.startActivity(new Intent(getApplicationContext(),TicTacToe2PB.class));
+                        }
+                    })
+            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mainContext.startActivity(new Intent(getApplicationContext(),TicTacToe2P.class));
+                    dialog.cancel();
+                }
+            });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }
+    }
+
+    private void setUpBluetooth() {
     }
 
     @Override

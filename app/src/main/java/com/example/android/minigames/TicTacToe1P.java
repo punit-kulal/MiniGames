@@ -68,7 +68,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
         findViewById(R.id.t1Restart).setEnabled(false);
         findViewById(R.id.UNDO).setEnabled(false);
         //Computer plays;
-        ((TextView) findViewById(R.id.Player)).setText(R.string.wait);
+        ((TextView) findViewById(R.id.Status)).setText(R.string.wait);
         int[] temp;
         temp = pc.move();
         allotMove((ImageView) findViewById(idArray[temp[0]][temp[1]]), compImage, TicTacToeAI.COMPUTER);
@@ -121,7 +121,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
                 list[i][j].setOnClickListener(null);
             }
         }
-        ((TextView) findViewById(R.id.Player)).setText(stringID);
+        ((TextView) findViewById(R.id.Status)).setText(stringID);
         Button undo_button = (Button) findViewById(R.id.UNDO);
         undo_button.setEnabled(false);
         difficultySpinner.setEnabled(true);
@@ -139,7 +139,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
                 list[i][j].setEnabled(true);
             }
         }
-        ((TextView) findViewById(R.id.Player)).setText(R.string.t1_inital);
+        ((TextView) findViewById(R.id.Status)).setText(R.string.t1_inital);
         findViewById(R.id.UNDO).setEnabled(true);
     }
 
@@ -217,7 +217,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
             public void run() {
                 Activity activity = mActivity.get();
                 if (activity != null) {
-                    ((TextView) activity.findViewById(R.id.Player)).setText(R.string.t1_inital);
+                    ((TextView) activity.findViewById(R.id.Status)).setText(R.string.t1_inital);
                     image.setImageResource(id);
                     //reset disabled onclicklistener.
                     for (int i = 0; i < SIZE; i++) {

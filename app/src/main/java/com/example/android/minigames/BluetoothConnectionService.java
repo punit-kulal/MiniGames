@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import static com.example.android.minigames.Constants.DEVICE_NAME;
+import static com.example.android.minigames.Constants.GAME_REQUEST;
 import static com.example.android.minigames.Constants.MESSAGE_DEVICE_NAME;
 import static com.example.android.minigames.Constants.MESSAGE_OPPONENT_MOVE;
 import static com.example.android.minigames.Constants.MESSAGE_OWN_MOVE;
@@ -26,8 +27,8 @@ import static com.example.android.minigames.Constants.TOAST;
 import static com.example.android.minigames.Constants.marker;
 
 
-/**
- * Created by Punit on 3/22/2017.
+/*
+ * Template used from Bluetooth sample chat ,modified  by Punit on 3/22/2017.
  */
 
 /**
@@ -512,9 +513,15 @@ public class BluetoothConnectionService {
                     opponentMove =mmInStream.read();
                     Log.d(TAG,"read value from friend");
                     Log.d(TAG,"value is "+opponentMove);
+                    //Handle Special Requests
+                    if (opponentMove>80){
+                        mHandler.obtainMessage(GAME_REQUEST,opponentMove,-1,buffer).sendToTarget();
+                    }
                     // Send the obtained bytes to the UI Activity
+                    else{
                     mHandler.obtainMessage(MESSAGE_OPPONENT_MOVE, opponentMove, -1, buffer)
                             .sendToTarget();
+                    }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

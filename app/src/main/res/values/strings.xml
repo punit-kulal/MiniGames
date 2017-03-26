@@ -47,4 +47,7 @@
     <string name="you_win">You Win</string>
     <string name="you_play">You can play</string>
     <string name="you_lose">You lose</string>
+    <string name="bt_wait">Waiting for friend to play.</string>
+    <string name="bt_waita_reply">Waiting for confirmation</string>
+    <string name="bt_setUpConnection">Set Up connection</string>
 </resources>

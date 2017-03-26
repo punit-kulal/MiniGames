@@ -1,4 +1,4 @@
-package com.example.android.minigames;
+package com.example.android.minigames.tictactoe;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,6 +23,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.minigames.BluetoothConnectionService;
+import com.example.android.minigames.DeviceListActivity;
+import com.example.android.minigames.R;
 
 import java.util.Stack;
 

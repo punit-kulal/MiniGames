@@ -1,4 +1,4 @@
-package com.example.android.minigames;
+package com.example.android.minigames.tictactoe;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,14 +12,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.minigames.R;
+
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Stack;
-
-import static com.example.android.minigames.TicTacToeAI.DEALLOCATE;
-import static com.example.android.minigames.TicTacToeAI.SIZE;
-import static com.example.android.minigames.TicTacToeAI.board;
-import static com.example.android.minigames.TicTacToeAI.hasWon;
 
 public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int[] imageSelector = new int[2];
@@ -47,7 +44,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
         imageSelector[0] = R.mipmap.x;
         imageSelector[1] = R.mipmap.gameo;
         for (int i = 0; i < 3; i++) {
-            Arrays.fill(board[i], DEALLOCATE);
+            Arrays.fill(TicTacToeAI.board[i], TicTacToeAI.DEALLOCATE);
             for (int j = 0; j < 3; j++) {
                 list[i][j] = (ImageView) findViewById(idArray[i][j]);
             }
@@ -77,7 +74,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private boolean checkIfOver(int stringID) {
-        if (hasWon()) {
+        if (TicTacToeAI.hasWon()) {
             afterGameOver(stringID);
             return true;
         }
@@ -105,10 +102,10 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
         id = view.getId();
         undo.add(id);
         move = getRowCol(id);
-        board[move[0]][move[1]] = player;
+        TicTacToeAI.board[move[0]][move[1]] = player;
         //shut down all listeners temporarily
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
+        for (int i = 0; i < TicTacToeAI.SIZE; i++) {
+            for (int j = 0; j < TicTacToeAI.SIZE; j++) {
                 list[i][j].setEnabled(false);
             }
         }
@@ -116,8 +113,8 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
     }
 
     void afterGameOver(int stringID) {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
+        for (int i = 0; i < TicTacToeAI.SIZE; i++) {
+            for (int j = 0; j < TicTacToeAI.SIZE; j++) {
                 list[i][j].setOnClickListener(null);
             }
         }
@@ -130,9 +127,9 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
     public void restart(View view) {
         //Clearing Board, clearing image view,tags and resetting thier listener
         pc.reset();
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                board[i][j] = DEALLOCATE;
+        for (int i = 0; i < TicTacToeAI.SIZE; i++) {
+            for (int j = 0; j < TicTacToeAI.SIZE; j++) {
+                TicTacToeAI.board[i][j] = TicTacToeAI.DEALLOCATE;
                 list[i][j].setImageResource(0);
                 list[i][j].setTag(null);
                 list[i][j].setOnClickListener(setter);
@@ -148,9 +145,9 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
     }
 
     private boolean isDraw() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (board[i][j] == DEALLOCATE)
+        for (int i = 0; i < TicTacToeAI.SIZE; i++) {
+            for (int j = 0; j < TicTacToeAI.SIZE; j++) {
+                if (TicTacToeAI.board[i][j] == TicTacToeAI.DEALLOCATE)
                     return false;
             }
         }
@@ -159,8 +156,8 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
 
     //helper method to return row,id;
     private int[] getRowCol(int id) {
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
+        for (int row = 0; row < TicTacToeAI.SIZE; row++) {
+            for (int col = 0; col < TicTacToeAI.SIZE; col++) {
                 if (id == idArray[row][col])
                     return new int[]{row, col};
             }
@@ -181,7 +178,7 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
                 currentImage.setImageResource(0);
                 currentImage.setOnClickListener(setter);
                 move = getRowCol(currentID);
-                board[move[0]][move[1]] = DEALLOCATE;
+                TicTacToeAI.board[move[0]][move[1]] = TicTacToeAI.DEALLOCATE;
             }
         }
         if (undo.isEmpty())
@@ -220,9 +217,9 @@ public class TicTacToe1P extends AppCompatActivity implements AdapterView.OnItem
                     ((TextView) activity.findViewById(R.id.Status)).setText(R.string.t1_inital);
                     image.setImageResource(id);
                     //reset disabled onclicklistener.
-                    for (int i = 0; i < SIZE; i++) {
-                        for (int j = 0; j < SIZE; j++) {
-                            if (board[i][j] == DEALLOCATE) {
+                    for (int i = 0; i < TicTacToeAI.SIZE; i++) {
+                        for (int j = 0; j < TicTacToeAI.SIZE; j++) {
+                            if (TicTacToeAI.board[i][j] == TicTacToeAI.DEALLOCATE) {
                                 ((TicTacToe1P) activity).list[i][j].setEnabled(true);
                             }
                         }

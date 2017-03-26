@@ -1,4 +1,4 @@
-package com.example.android.minigames;
+package com.example.android.minigames.tictactoe;
 
 import java.util.ArrayList;
 import java.util.Iterator;

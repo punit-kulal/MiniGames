@@ -19,18 +19,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TicTacToe2P"
+            android:name=".tictactoe.TicTacToe2P"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".TicTacToe1P"
+            android:name=".tictactoe.TicTacToe1P"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".Reflex"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".TicTacToe2PB"
+        <activity android:name=".tictactoe.TicTacToe2PB"
                   android:parentActivityName=".MainActivity"
                   android:screenOrientation="portrait" />
         <activity android:name=".DeviceListActivity">

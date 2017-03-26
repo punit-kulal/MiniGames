@@ -1,4 +1,4 @@
-package com.example.android.minigames;
+package com.example.android.minigames.tictactoe;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.minigames.R;
 
 import java.util.Stack;
 
@@ -31,11 +33,11 @@ public class TicTacToe2P extends AppCompatActivity {
         if (marker) {
             ((ImageView) view).setImageResource(R.mipmap.x);
             view.setTag(R.mipmap.x);
-            ((TextView) findViewById(R.id.Player)).setText(R.string.g1_t2_p2play);
+            ((TextView) findViewById(R.id.Status)).setText(R.string.g1_t2_p2play);
         } else {
             ((ImageView) view).setImageResource(R.mipmap.gameo);
             view.setTag(R.mipmap.gameo);
-            ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p1play);
+            ((TextView) findViewById(R.id.Status)).setText(R.string.t2_p1play);
         }
         marker = !marker;
         view.setOnClickListener(null);
@@ -49,13 +51,13 @@ public class TicTacToe2P extends AppCompatActivity {
                 list[i].setOnClickListener(null);
             }
             if (marker)
-                ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p2won);
+                ((TextView) findViewById(R.id.Status)).setText(R.string.t2_p2won);
             else
-                ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p1won);
+                ((TextView) findViewById(R.id.Status)).setText(R.string.t2_p1won);
             return;
         }
         if (draw()) {
-            ((TextView) findViewById(R.id.Player)).setText(R.string.draw);
+            ((TextView) findViewById(R.id.Status)).setText(R.string.draw);
         }
     }
 
@@ -179,7 +181,7 @@ public class TicTacToe2P extends AppCompatActivity {
             ((Button)findViewById(R.id.UNDO)).setTextColor(getResources().getColor(R.color.colorAccent));
         marker = true;
         winner = false;
-        ((TextView)findViewById(R.id.Player)).setText(R.string.player_1_can_play);
+        ((TextView)findViewById(R.id.Status)).setText(R.string.player_1_can_play);
     }
 
     public void undo(View view) {
@@ -190,9 +192,9 @@ public class TicTacToe2P extends AppCompatActivity {
             current.setImageResource(0);
             marker = !marker;
             if (marker) {
-                ((TextView) findViewById(R.id.Player)).setText(R.string.g1_t2_p2play);
+                ((TextView) findViewById(R.id.Status)).setText(R.string.g1_t2_p2play);
             } else
-                ((TextView) findViewById(R.id.Player)).setText(R.string.player_1_can_play);
+                ((TextView) findViewById(R.id.Status)).setText(R.string.player_1_can_play);
             current.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

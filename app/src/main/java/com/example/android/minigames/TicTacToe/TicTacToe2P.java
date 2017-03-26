@@ -1,4 +1,4 @@
-package com.example.android.minigames;
+package com.example.android.minigames.tictactoe;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.minigames.R;
 
 import java.util.Stack;
 

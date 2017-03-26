@@ -13,6 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.example.android.minigames.tictactoe.TicTacToe1P;
+import com.example.android.minigames.tictactoe.TicTacToe2P;
+import com.example.android.minigames.tictactoe.TicTacToe2PB;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{

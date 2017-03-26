@@ -58,7 +58,7 @@ class TicTacToeAI {
                         return bestMoveStack.pop();
                     break;
                 case 3:
-                    return new int[]{best_move[0],best_move[1]};
+                    return new int[]{best_move[1],best_move[2]};
             }
             a = (int) Math.round(Math.random() * (arr_size - 1));
             count++;

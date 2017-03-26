@@ -1,11 +1,11 @@
 package com.example.android.minigames;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,13 +24,15 @@ import android.widget.Toast;
 
 import java.util.Stack;
 
+import static com.example.android.minigames.Constants.marker;
+import static com.example.android.minigames.R.id.UNDO;
+
 public class TicTacToe2PB extends AppCompatActivity {
 
     //Game parameters
     ImageView[] list = new ImageView[10];
     boolean winner = false;
     int[] idArray;
-    boolean marker = true;
     int id;
     Stack<Integer> undo = new Stack<>();
 
@@ -82,6 +85,9 @@ public class TicTacToe2PB extends AppCompatActivity {
         idArray = new int[]{0, R.id.one, R.id.two, R.id.three,
                 R.id.four, R.id.five, R.id.six,
                 R.id.seven, R.id.eight, R.id.nine};
+        for (int i = 1; i < 10; i++) {
+            list[i] = (ImageView) findViewById(idArray[i]);
+        }
     }
 
     @Override
@@ -152,8 +158,6 @@ public class TicTacToe2PB extends AppCompatActivity {
         // Initialize the BluetoothConnectionService to perform bluetooth connections
         gameService = new BluetoothConnectionService((Context) this, mHandler);
 
-        // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer("");
     }
 
     /**
@@ -173,25 +177,25 @@ public class TicTacToe2PB extends AppCompatActivity {
      *
      * @param message A string of text to send.
      */
-    //TODO change message to accept coordinates.
-    private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (gameService.getState() != BluetoothConnectionService.STATE_CONNECTED) {
-            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothConnectionService to write
-            byte[] send = message.getBytes();
-            gameService.write(send);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
-        }
-    }
+//
+//    private void sendMessage(String message) {
+//        // Check that we're actually connected before trying anything
+//        if (gameService.getState() != BluetoothConnectionService.STATE_CONNECTED) {
+//            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        // Check that there's actually something to send
+//        if (message.length() > 0) {
+//            // Get the message bytes and tell the BluetoothConnectionService to write
+//            byte[] send = message.getBytes();
+//            gameService.write(send);
+//
+//            // Reset out string buffer to zero and clear the edit text field
+//            mOutStringBuffer.setLength(0);
+//            mOutEditText.setText(mOutStringBuffer);
+//        }
+//    }
 
     /**
      * The action listener for the EditText widget, to listen for the return key
@@ -213,33 +217,33 @@ public class TicTacToe2PB extends AppCompatActivity {
      *
      * @param resId a string resource ID
      */
-    private void setStatus(int resId) {
-        if (null == this) {
-            return;
-        }
-        final ActionBar actionBar = getActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        actionBar.setSubtitle(resId);
-        ((TextView)findViewById(R.id.Player)).setText(resId);
-    }
+//    private void setStatus(int resId) {
+//        if (null == this) {
+//            return;
+//        }
+//        final ActionBar actionBar = getActionBar();
+//        if (null == actionBar) {
+//            return;
+//        }
+//        actionBar.setSubtitle(resId);
+//        ((TextView)findViewById(R.id.Player)).setText(resId);
+//    }
 
     /**
      * Updates the status on the action bar.
      *
      * @param subTitle status
      */
-    private void setStatus(CharSequence subTitle) {
-        if (null == this) {
-            return;
-        }
-        final ActionBar actionBar = getActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        actionBar.setSubtitle(subTitle);
-    }
+//    private void setStatus(CharSequence subTitle) {
+//        if (null == this) {
+//            return;
+//        }
+//        final ActionBar actionBar = getActionBar();
+//        if (null == actionBar) {
+//            return;
+//        }
+//        actionBar.setSubtitle(subTitle);
+//    }
 
     /**
      * The Handler that gets information back from the BluetoothConnectionService
@@ -249,27 +253,29 @@ public class TicTacToe2PB extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case Constants.MESSAGE_OPPONENT_MOVE:
+                    playForFriend(msg.arg1);
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothConnectionService.STATE_CONNECTED:
-                            setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
+
                             break;
                         case BluetoothConnectionService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
+
                             break;
                         case BluetoothConnectionService.STATE_LISTEN:
                         case BluetoothConnectionService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
+
                             break;
                     }
                     break;
                 case Constants.MESSAGE_WRITE:
 
                 case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
+
                     // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    //TODO add device marker as next marked area.
+
+
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -285,6 +291,7 @@ public class TicTacToe2PB extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                     break;
+
             }
         }
     };
@@ -365,5 +372,238 @@ public class TicTacToe2PB extends AppCompatActivity {
         }
         return false;
     }
-    /**/
+    /*UI changes for the game*/
+    //TODO Disable every button except main menu unless i get a reply.
+    public void addMarker(View view) {
+        ImageView a = (ImageView) view;
+        Log.d(TAG,"entered on click listener.");
+        if (marker.get()) {
+            a.setImageResource(R.mipmap.x);
+            Log.d(TAG,"Setting value as x ");
+            a.setTag(R.mipmap.x);
+            ((TextView) findViewById(R.id.Player)).setText(R.string.g1_t2_p2play);
+        } else {
+            a.setImageResource(R.mipmap.gameo);
+            a.setTag(R.mipmap.gameo);
+            ((TextView) findViewById(R.id.Player)).setText(R.string.t2_p1play);
+        }
+        Log.d(TAG,"Completed setting resource.");
+        a.setOnClickListener(null);
+        id = view.getId();
+        int move = getMoveFromId(id);
+        undo.push(id);
+        gameService.write(move);
+        Log.d(TAG,"Returned from writing the tag");
+        //blockForExternalInput(true);
+        if (checkIfOver(id)) {
+            /*Ready to start new game*/
+            blockForExternalInput(false);
+            Button undo_button = (Button)findViewById(UNDO);
+            undo_button.setEnabled(false);
+            Log.d(TAG,"Entered game over");
+            for (int i = 1; i <= 9; i++) {
+                list[i].setOnClickListener(null);
+            }
+            ((TextView) findViewById(R.id.Player)).setText(R.string.you_win);
+        }
+        if (draw()) {
+            Log.d(TAG,"Entered game Draw");
+            ((TextView) findViewById(R.id.Player)).setText(R.string.draw);
+        }
+        Log.d(TAG,"Method execution complete.");
+    }
+
+     /*Method for recieving input from friend by using the handler*/
+    void playForFriend(int move){
+        ImageView current = ((ImageView)findViewById(idArray[move]));
+        if (!marker.get()) {
+             current.setImageResource(R.mipmap.x);
+            current.setTag(R.mipmap.x);
+            ((TextView) findViewById(R.id.Player)).setText(R.string.you_play);
+        } else {
+             current.setImageResource(R.mipmap.gameo);
+            current.setTag(R.mipmap.gameo);
+            ((TextView) findViewById(R.id.Player)).setText(R.string.you_play);
+        }
+        blockForExternalInput(false);
+        undo.push(idArray[move]);
+        if (checkIfOver(id)) {
+            /*Ready to start new game*/
+            blockForExternalInput(false);
+            Button undo_button = (Button)findViewById(UNDO);
+            undo_button.setEnabled(false);
+            for (int i = 1; i <= 9; i++) {
+                list[i].setOnClickListener(null);
+            }
+            ((TextView) findViewById(R.id.Player)).setText(R.string.you_lose);
+        }
+        if (draw()) {
+            ((TextView) findViewById(R.id.Player)).setText(R.string.draw);
+        }
+    }
+
+    private int getMoveFromId(int id) {
+        for (int i = 1; i <idArray.length; i++) {
+            if (id == idArray[i])
+                return i;
+        }
+        return 0;
+    }
+
+    private boolean draw() {
+        for (int i = 1; i <= 9; i++) {
+            if (list[i].getTag() == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfOver(int id) {
+
+        for (int i = 1; i < 10; i++) {
+            list[i] = (ImageView) findViewById(idArray[i]);
+        }
+        //Check for 2nd 4th and 6th position
+        for (int i = 2; i < 9; i += 2) {
+            if (id == idArray[i]) {
+                winner = checkHorizontal(id);
+                winner = winner || checkVertical(id);
+                return winner;
+            }
+        }
+
+        for (int i = 1; i <= 9; i += 2) {
+            if (id == idArray[i]) {
+                winner = checkHorizontal(id);
+                winner = winner || checkVertical(id);
+                winner = winner || checkDiagonal(id);
+                return winner;
+            }
+        }
+        return winner;
+    }
+
+    private boolean checkVertical(int id) {
+        boolean set;
+        for (int i = 1; i <= 3; i++) {
+            set = true;
+            for (int j = i; j <= 9; j += 3) {
+                if (list[j].getTag() == null)
+                    set = false;
+            }
+            if (set && (id == idArray[i] || id == idArray[i + 3] || id == idArray[i + 6])) {
+                if (list[i].getTag().equals(list[i + 3].getTag()) && list[i].getTag().
+                        equals(list[i + 6].getTag())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private boolean checkHorizontal(int id) {
+        boolean set;
+        for (int i = 1; i <= 9; i += 3) {
+            set = true;
+            for (int j = i; j < i + 3; j++) {
+                if (list[j].getTag() == null)
+                    set = false;
+            }
+            if (set && (id == idArray[i] || id == idArray[i + 1] || id == idArray[i + 2])) {
+                if (list[i].getTag().equals(list[i + 1].getTag()) && list[i].getTag().
+                        equals(list[i + 2].getTag())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkDiagonal(int id) {
+        boolean set = true;
+        for (int i = 1; i <= 9; i += 4) {
+            if (list[i].getTag() == null)
+                set = false;
+        }
+        if (set && (id == idArray[1] || id == idArray[5] || id == idArray[9])) {
+            if (list[1].getTag().equals(list[5].getTag()) && list[1].getTag().
+                    equals(list[9].getTag())) {
+                return true;
+            }
+        }
+        set = true;
+        for (int i = 3; i < 9; i += 2) {
+            if (list[i].getTag() == null)
+                set = false;
+        }
+        if (set && (id == idArray[3] || id == idArray[5] || id == idArray[7])) {
+            if (list[3].getTag().equals(list[5].getTag()) && list[3].getTag().
+                    equals(list[7].getTag())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void restart(View view) {
+        undo.clear();
+        for (int i = 1; i < 10; i++) {
+            ImageView current = list[i];
+            current.setTag(null);
+            current.setImageResource(0);
+            boolean t = marker.get();
+            marker.set(!t);
+            current.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addMarker(v);
+                }
+            });
+        }
+        findViewById(UNDO).setClickable(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((Button)findViewById(UNDO)).setTextColor(getResources().getColor(R.color.colorAccent,null));
+        }
+        else
+            ((Button)findViewById(UNDO)).setTextColor(getResources().getColor(R.color.colorAccent));
+        winner = false;
+        ((TextView)findViewById(R.id.Player)).setText(R.string.player_1_can_play);
+    }
+
+    //// TODO: 3/25/2017 implement undo revised two pops
+    public void undo(View view) {
+        if (!undo.isEmpty()) {
+            int undo_id = undo.pop();
+            ImageView current = ((ImageView) findViewById(undo_id));
+            current.setTag(null);
+            current.setImageResource(0);
+            if (marker.get()) {
+                ((TextView) findViewById(R.id.Player)).setText(R.string.g1_t2_p2play);
+            } else
+                ((TextView) findViewById(R.id.Player)).setText(R.string.player_1_can_play);
+            current.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addMarker(v);
+                }
+            });
+        }
+    }
+
+    private void blockForExternalInput(boolean value){
+        for (int i = 1; i < 10; i++) {
+            ImageView current = (ImageView) findViewById(idArray[i]);
+            current.setClickable(!value);
+        }
+        findViewById(UNDO).setEnabled(!value);
+        findViewById(R.id.t1Restart).setEnabled(!value);
+    }
+
+    public void mainMenu(View view) {
+        this.finish();
+    }
+
 }

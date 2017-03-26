@@ -30,8 +30,9 @@
             android:name=".Reflex"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".TicTacToe2PB">
-        </activity>
+        <activity android:name=".TicTacToe2PB"
+                  android:parentActivityName=".MainActivity"
+                  android:screenOrientation="portrait" />
         <activity android:name=".DeviceListActivity">
         </activity>
     </application>

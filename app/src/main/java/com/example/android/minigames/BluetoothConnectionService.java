@@ -12,10 +12,18 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.UUID;
+
+import static com.example.android.minigames.Constants.DEVICE_NAME;
+import static com.example.android.minigames.Constants.MESSAGE_DEVICE_NAME;
+import static com.example.android.minigames.Constants.MESSAGE_OPPONENT_MOVE;
+import static com.example.android.minigames.Constants.MESSAGE_OWN_MOVE;
+import static com.example.android.minigames.Constants.MESSAGE_STATE_CHANGE;
+import static com.example.android.minigames.Constants.MESSAGE_TOAST;
+import static com.example.android.minigames.Constants.MESSAGE_WRITE;
+import static com.example.android.minigames.Constants.TOAST;
+import static com.example.android.minigames.Constants.marker;
 
 
 /**
@@ -81,7 +89,7 @@ public class BluetoothConnectionService {
         mNewState = mState;
 
 // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, mNewState, -1).sendToTarget();
+        mHandler.obtainMessage(MESSAGE_STATE_CHANGE, mNewState, -1).sendToTarget();
     }
 
     /**
@@ -190,9 +198,9 @@ public class BluetoothConnectionService {
         mConnectedThread.start();
 
 // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(Constants.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.DEVICE_NAME, device.getName());
+        bundle.putString(DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 // Update UI title
@@ -247,14 +255,31 @@ public class BluetoothConnectionService {
         r.write(out);
     }
 
+    public void write(int move)
+    {
+        // Create temporary object
+        ConnectedThread r;
+// Synchronize a copy of the ConnectedThread
+       // synchronized (this) {
+            Log.d(TAG,"Entered synchronized");
+            Log.d(TAG,mState +" " +STATE_CONNECTED);
+            if (mState != STATE_CONNECTED) return;
+            Log.d(TAG,"Didnt return");
+            r = mConnectedThread;
+        //}
+// Perform the write unsynchronized
+        Log.d(TAG,"WRiting to thread");
+        r.write(move);
+    }
+
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
     private void connectionFailed() {
 // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TOAST, "Unable to connect device");
+        bundle.putString(TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -271,9 +296,9 @@ public class BluetoothConnectionService {
      */
     private void connectionLost() {
 // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TOAST, "Device connection was lost");
+        bundle.putString(TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -284,6 +309,8 @@ public class BluetoothConnectionService {
 // Start the service over to restart listening mode
         BluetoothConnectionService.this.start();
     }
+
+
 
     /**
      * This thread runs while listening for incoming connections. It behaves
@@ -329,6 +356,7 @@ public class BluetoothConnectionService {
                     // successful connection or an exception
                     Log.d(TAG,"Listening for " +mSocketType+ " connection.");
                     socket = mmServerSocket.accept();
+                    marker.set(true);
                     Log.d(TAG,"Listening stopped.");
                 } catch (IOException e) {
                     Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
@@ -418,6 +446,7 @@ public class BluetoothConnectionService {
                 // This is a blocking call and will only return on a
                 // successful connection or an exception
                 mmSocket.connect();
+                Log.d(TAG,mSocketType+" has connected.");
             } catch (IOException e) {
                 // Close the socket
                 try {
@@ -454,41 +483,37 @@ public class BluetoothConnectionService {
      */
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
+        private InputStream mmInStream;
+        private OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket, String socketType) {
             Log.d(TAG, "create ConnectedThread: " + socketType);
             mmSocket = socket;
-            ObjectInputStream tmpIn = null;
-            ObjectOutputStream tmpOut = null;
-
+//            Check whether objectstream is supported.
             // Get the BluetoothSocket input and output streams
             try {
-                tmpIn = new ObjectInputStream(socket.getInputStream());
-                tmpOut = new ObjectOutputStream(socket.getOutputStream());
+                mmInStream= socket.getInputStream();
+                mmOutStream= socket.getOutputStream();
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
-
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
             mState = STATE_CONNECTED;
         }
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024];
-            int bytes;
+            int opponentMove;
 
             // Keep listening to the InputStream while connected
             while (mState == STATE_CONNECTED) {
                 try {
                     // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
-
+                    opponentMove =mmInStream.read();
+                    Log.d(TAG,"read value from friend");
+                    Log.d(TAG,"value is "+opponentMove);
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(MESSAGE_OPPONENT_MOVE, opponentMove, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -497,6 +522,8 @@ public class BluetoothConnectionService {
                 }
             }
         }
+
+
 
         /**
          * Write to the connected OutStream.
@@ -508,12 +535,25 @@ public class BluetoothConnectionService {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
         }
+
+        public void write(int move) {
+            try {
+                mmOutStream.write(((Integer)move).byteValue());
+                Log.d(TAG,"sent to friend.");
+                // Share the sent message back to the UI Activity
+                mHandler.obtainMessage(MESSAGE_OWN_MOVE, move, -1, move)
+                        .sendToTarget();
+            } catch (IOException e) {
+                Log.e(TAG, "Exception during write", e);
+            }
+        }
+
 
         public void cancel() {
             try {
